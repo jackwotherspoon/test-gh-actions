@@ -8,18 +8,21 @@ jobs:
   build:
     name: run basic test
     runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9"]
     env:
       TEST_VAR: ${{ secrets.TEST_VAR }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         
-      - name: Setup Python 3.9
+      - name: Setup Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
-          python-version: "3.9"
+          python-version: ${{ matrix.python-version }}
 
       - run: pip install nox
 
       - name: Run nox session
-        run: nox --sessions test-3.9
+        run: nox --sessions test-${{ matrix.python-version }}
