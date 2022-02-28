@@ -25,6 +25,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - run: python print.py
+      
       - run: pip install nox
 
       - name: Run nox session
