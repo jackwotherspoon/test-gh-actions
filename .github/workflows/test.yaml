@@ -42,6 +42,13 @@ jobs:
     env:
       TEST_VAR: ${{ secrets.TEST_VAR }}
     steps:
+      - name: remove labels
+        uses: actions-ecosystem/action-remove-labels@v1
+        if: env.BASE_BRANCH == 'main'
+        with:
+          github_token: ${{ github.token }}
+          labels: 'actions:force-run'
+
       - name: Checkout code
         uses: actions/checkout@v2
         
