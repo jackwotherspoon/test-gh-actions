@@ -7,8 +7,8 @@ on:
   pull_request_target:
     types: [labeled]
 jobs:
-  integration-trusted:
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push'}}
+  build:
+    if: ${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' }}    
     name: run basic test
     runs-on: "ubuntu-latest"
     strategy:
@@ -17,38 +17,6 @@ jobs:
     env:
       TEST_VAR: ${{ secrets.TEST_VAR }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        
-      - name: Setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - run: python print.py
-      
-      - run: pip install nox
-
-      - name: Run nox session
-        run: nox --sessions test-${{ matrix.python-version }}
-    
-  integration-fork:
-    if: ${{ github.event_name == 'pull_request_target' && github.event.label.name == 'actions:force-run'}}
-    name: run basic test (fork)
-    runs-on: "ubuntu-latest"
-    strategy:
-      matrix:
-        python-version: ["3.7", "3.8", "3.9"]
-    env:
-      TEST_VAR: ${{ secrets.TEST_VAR }}
-    steps:
-      - name: remove labels
-        uses: actions-ecosystem/action-remove-labels@v1
-        if: env.BASE_BRANCH == 'main'
-        with:
-          github_token: ${{ github.token }}
-          labels: actions:force-run
-
       - name: Checkout code
         uses: actions/checkout@v2
         
