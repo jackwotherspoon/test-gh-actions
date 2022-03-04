@@ -34,3 +34,21 @@ jobs:
         run: nox --sessions test-${{ matrix.python-version }}
         env:
           TEST_VAR: ${{ secrets.TEST_VAR }}
+
+      - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            try {
+              await github.rest.issues.removeLabel({
+                name: 'actions:force-run',
+                owner: 'jackwotherspoon,
+                repo: 'test-gh-actions',
+                issue_number: context.payload.pull_request.number
+              });
+            } catch (e) {
+              if (!e.message.includes('Label does not exist')) {
+                throw e;
+              }
+            }
