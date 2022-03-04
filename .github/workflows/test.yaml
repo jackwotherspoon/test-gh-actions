@@ -8,7 +8,7 @@ on:
     types: [labeled]
 jobs:
   build:
-    if: ${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' }}    
+    if: ${{ (github.event.action != 'labeled' && github.event.pull_request.head.fork != true) || github.event.label.name == 'actions:force-run' }}    
     name: run basic test
     runs-on: "ubuntu-latest"
     strategy:
@@ -35,7 +35,7 @@ jobs:
         env:
           TEST_VAR: ${{ secrets.TEST_VAR }}
 
-      - name: Remove label
+      - name: Remove PR label
         if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
         uses: actions/github-script@v5
         with:
