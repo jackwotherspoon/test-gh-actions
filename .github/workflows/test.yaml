@@ -8,7 +8,7 @@ on:
     types: [labeled]
 jobs:
   integration-trusted:
-    if: ${{ github.event_name == 'pull_request'}}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push'}}
     name: run basic test
     runs-on: "ubuntu-latest"
     strategy:
@@ -33,7 +33,7 @@ jobs:
         run: nox --sessions test-${{ matrix.python-version }}
     
   integration-fork:
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'pull_request_target' }}
     name: run basic test (fork)
     runs-on: "ubuntu-latest"
     strategy:
