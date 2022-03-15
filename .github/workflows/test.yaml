@@ -24,8 +24,8 @@ jobs:
             try {
               await github.rest.issues.removeLabel({
                 name: 'actions:run',
-                owner: 'jackwotherspoon',
-                repo: 'test-gh-actions',
+                owner: context.repo.owner,
+                repo: context.repo.repo,
                 issue_number: context.payload.pull_request.number
               });
             } catch (e) {
