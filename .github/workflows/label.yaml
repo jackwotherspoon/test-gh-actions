@@ -1,4 +1,5 @@
-name: Labels
+# run basic tests on regular PR as well as with additional label trigger
+name: PR with Label
 on:
   push:
     branches:
