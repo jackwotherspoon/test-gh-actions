@@ -1,5 +1,4 @@
-# run basic tests on regular PR as well as with additional label trigger
-name: PR with Label
+name: Labels2
 on:
   push:
     branches:
@@ -36,14 +35,58 @@ jobs:
         with:
           ref: ${{github.event.pull_request.head.sha}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
-        
+
       - name: Setup Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
 
       - run: python print.py
-      
+
+      - run: pip install nox
+
+      - name: Run nox session
+        run: nox --sessions test-${{ matrix.python-version }}
+        env:
+          TEST_VAR: ${{ secrets.TEST_VAR }}
+
+  label:
+    if: ${{ github.event.action != 'labeled' || github.event.label.name == 'tests:run' }}    
+    name: Run test
+    runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9"]
+    steps:
+      - name: Remove PR label
+        if: ${{ github.event.action == 'labeled' && github.event.label.name == 'tests:run' }}
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            try {
+              await github.rest.issues.removeLabel({
+                name: 'tests:run',
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number
+              });
+            } catch (e) {
+              console.log('Failed to remove label. Another job may have already removed it!')
+            }
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.pull_request.head.sha}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
+
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - run: python print.py
+
       - run: pip install nox
 
       - name: Run nox session
