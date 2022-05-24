@@ -8,7 +8,7 @@ on:
     types: [opened, synchronize, reopened, labeled]
 jobs:
   build:
-    if: ${{ github.event.action != 'labeled' || github.event.label.name == 'tests:run' }}    
+    if: ${{ github.event.action != 'labeled' || github.event.label.name == 'tests: run' }}    
     name: Test label PR
     runs-on: "ubuntu-latest"
     strategy:
@@ -16,14 +16,14 @@ jobs:
         python-version: ["3.7", "3.8", "3.9"]
     steps:
       - name: Remove PR label
-        if: ${{ github.event.action == 'labeled' && github.event.label.name == 'tests:run' }}
+        if: ${{ github.event.action == 'labeled' && github.event.label.name == 'tests: run' }}
         uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             try {
               await github.rest.issues.removeLabel({
-                name: 'tests:run',
+                name: 'tests: run',
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.pull_request.number
