@@ -17,7 +17,9 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            github.rest.issues.create({
-              title: Failed Build,
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Failed Build',
               body: '👋 Uh oh a test seemed to fail!'
             })
