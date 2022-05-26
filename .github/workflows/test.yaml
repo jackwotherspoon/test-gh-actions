@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize, reopened, labeled]
 jobs:
   build:
-    if: ${{ (github.event.action != 'labeled' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name) || github.event.label.name == 'actions:run' }}    
+    if: ${{ github.event.action != 'labeled' || github.event.label.name == 'actions:run' }}    
     name: run basic test
     runs-on: "ubuntu-latest"
     strategy:
