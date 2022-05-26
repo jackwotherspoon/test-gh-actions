@@ -1,5 +1,5 @@
 def main():
-    print("PRINTING FROM PYTHON FILE!")
+    print("PRINTING FROM EXAMPLE PR!")
     
 if __name__ == "__main__":
     main()
