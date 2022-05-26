@@ -44,7 +44,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - run: python print.py
+      - run: echo "REMOVED PRINT FOR ECHOOOOOOO!"
       
       - run: pip install nox
 
