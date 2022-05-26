@@ -1,5 +1,5 @@
 def main():
-    print("PRINTING FROM EXTERNAL PR WORKFLOW!")
+    print("PRINTING FROM EXAMPLE PR!")
     
 if __name__ == "__main__":
     main()
