@@ -1,5 +1,5 @@
 def main():
-    print("PRINTING FROM EXTERNAL PR WORKFLOW!")
+    print("TESTING NEW COMMIT AFTER TAG ADDED!")
     
 if __name__ == "__main__":
     main()
