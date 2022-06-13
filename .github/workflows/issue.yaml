@@ -1,0 +1,25 @@
+name: Create Issue
+on:
+  push:
+    branches:
+    - 'main'
+  pull_request:
+jobs:
+  test:
+    name: Failed Action
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Try to fail
+        run: exit 1
+
+      - name: Create Issue on Failure
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Failed Build',
+              body: '👋 Uh oh a test seemed to fail!'
+            })
