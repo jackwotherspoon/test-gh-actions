@@ -31,6 +31,8 @@ jobs:
               });
             } catch (e) {
               console.log('Failed to remove label. Another job may have already removed it!');
+              console.log(context.repo.owner)
+              console.log(context.repo.repo)
             }
       - name: Checkout code
         uses: actions/checkout@v3
