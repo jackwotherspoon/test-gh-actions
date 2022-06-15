@@ -8,30 +8,31 @@ on:
     types: [labeled]
 jobs:
   build:
-    if: ${{ (github.event.action != 'labeled' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name) || github.event.label.name == 'actions:run' }}    
+    if: "${{ (github.event.action != 'labeled' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name) || github.event.label.name == 'tests: run' }}"  
     name: run basic test
-    runs-on: "ubuntu-latest"
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: ['ubuntu-latest', 'macos-latest']
         python-version: ["3.7", "3.8", "3.9"]
     steps:
       - name: Remove PR label
-        if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:run' }}
-        uses: actions/github-script@v5
+        if: "${{ github.event.action == 'labeled' && github.event.label.name == 'tests: run' }}"
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             try {
               await github.rest.issues.removeLabel({
-                name: 'actions:run',
+                name: 'tests: run',
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.pull_request.number
               });
             } catch (e) {
-              if (!e.message.includes('Label does not exist')) {
-                throw e;
-              }
+              console.log('Failed to remove label. Another job may have already removed it!');
+              console.log(context.repo.owner)
+              console.log(context.repo.repo)
             }
       - name: Checkout code
         uses: actions/checkout@v3
